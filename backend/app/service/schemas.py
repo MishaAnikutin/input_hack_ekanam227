@@ -1,9 +1,7 @@
-from datetime import datetime
-from typing import List, Optional
 from pydantic import BaseModel
+from typing import List, Optional
 
 
-# Базовые модели
 class UserBase(BaseModel):
     telegram_id: int
     username: Optional[str] = None
@@ -19,8 +17,10 @@ class UserTickerBase(BaseModel):
     user_id: int
     ticker_id: int
 
+    class Config:
+        from_attributes = True
 
-# Модели для создания объектов
+
 class UserCreate(UserBase):
     pass
 

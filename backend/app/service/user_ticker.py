@@ -51,14 +51,14 @@ class UserTickerService:
         )
 
     async def remove_ticker_from_user(
-        self, request: RemoveTickerFromUserRequest
+        self, telegram_id: int, ticker: str
     ) -> bool:
         """Удаляет тикер из портфеля пользователя"""
-        user = await self.user_repo.get_user(request.telegram_id)
+        user = await self.user_repo.get_user(telegram_id)
         if not user:
             raise ValueError("Пользователь не найден")
 
-        ticker = await self.company_repo.get_ticker_by_symbol(request.ticker_symbol)
+        ticker = await self.company_repo.get_ticker_by_symbol(ticker)
         if not ticker:
             raise ValueError("Тикер не найден")
 
