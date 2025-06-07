@@ -9,7 +9,8 @@ from services import (
     get_or_create_user,
     add_ticker_to_user,
     delete_ticker_from_user,
-    get_user_tickers, Stock
+    get_user_tickers, Stock, get_ticker_summary, get_ticker_most_resonance, get_an_interpretation,
+    get_weekly_summary_and_interpretation
 )
 
 router = Router()
@@ -117,9 +118,6 @@ async def close_subscriptions(callback: CallbackQuery):
 
 
 # Обработчики других команд
-@router.message(Command("summary"))
-async def summary_command(message: Message):
-    await message.answer("📈 Запущена суммаризация новостей за неделю...")
 
 
 @router.message(Command("ticker"))
@@ -138,6 +136,7 @@ async def ticker_analytics(callback: CallbackQuery):
     ticker = callback.data.split(':', maxsplit=1)[1]
 
     stock = Stock(ticker)
+
     msg = await callback.message.answer(text='Генерируем график...')
     plot_bytes = stock.build_plot(sentiment_data=pd.DataFrame({'date': [], 'sentiment_value': []}))
     await msg.delete()
@@ -148,3 +147,33 @@ async def ticker_analytics(callback: CallbackQuery):
         caption=caption,
         parse_mode=ParseMode.HTML,
     )
+
+    msg = await callback.message.answer(text='Суммаризируем новости...')
+    ticker_summary = await get_ticker_summary(ticker=ticker)
+    await callback.message.answer(text=f'Саммари:\n\n{ticker_summary}')
+    await msg.delete()
+
+    msg = await callback.message.answer(text='Находим самые резонансные новости...')
+    ticker_most_resonance = await get_ticker_most_resonance(ticker=ticker, limit=5)
+
+    resonanse_text = 'Топ новостей по сентименту и поисковым запросам:\n\n'
+    for i, resonanse in enumerate(ticker_most_resonance):
+        resonanse_text += (f'{i + 1}) {resonanse.source.upper()}\n\t{resonanse.text[:100]}... ({resonanse.url})'
+                           f'\n\tСентимент: {resonanse.sentiment:0.1f}, '
+                           f'\n\tПоисковая частота: {resonanse.search_index:0.1f}\n\n')
+
+    await callback.message.answer(text=resonanse_text)
+    await msg.delete()
+    msg = await callback.message.answer(text='Интерпретируем...')
+    interpretation = await get_an_interpretation(summary=ticker_summary, resonance=resonanse_text)
+    await msg.delete()
+    await callback.message.answer(text=f'Размышления: {interpretation.think}\n\nИтог: {interpretation.answer}')
+
+
+@router.message(Command("summary"))
+async def summary_command(message: Message):
+    await message.answer("📈 Суммаризация новостей за неделю:")
+    summary, interpretation = await get_weekly_summary_and_interpretation()
+
+    await message.answer(text=f'Саммари: {summary}')
+    await message.answer(text=f'Интерпретация:\nРазмышления: {interpretation.think}\n\nИтог: {interpretation.answer}')

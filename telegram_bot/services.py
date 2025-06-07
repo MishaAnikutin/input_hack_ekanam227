@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import dataclass
 from io import BytesIO
 
 import httpx
@@ -52,6 +53,8 @@ import apimoex
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import mplfinance as mplf
+import matplotlib.dates as mpl_dates
 import matplotlib.ticker as ticker
 from io import BytesIO
 import datetime
@@ -69,7 +72,17 @@ class Stock:
         data = apimoex.get_board_candles(self._session, security=self._ticker, interval=1, start=start)
         df = pd.DataFrame(data)
         print(df.columns)
+        df['open'] = df['open'].astype(float)
+        df['close'] = df['close'].astype(float)
+        df['high'] = df['high'].astype(float)
+        df['low'] = df['low'].astype(float)
+        df['value'] = df['value'].astype(float)
+        df['volume'] = df['volume'].astype(float)
         df['begin'] = pd.to_datetime(df['begin'])
+        # df['begin'] = df['begin'].apply(mpl_dates.date2num)
+
+        print(df.info())
+
         return df
 
     def build_plot(self, sentiment_data: pd.DataFrame) -> bytes:
@@ -84,6 +97,7 @@ class Stock:
         ax2.spines[['top', 'right']].set_visible(False)
 
         # График цены (основная ось)
+        # mplf.plot(data, width=0.006, colorup='green', colordown='red',)
         ax.plot(
             data['begin'],  # Исправлено: 'TRADEDATE'
             data['open'],
@@ -132,3 +146,56 @@ class Stock:
         plt.close(fig)
 
         return buf.getvalue()
+
+
+async def get_ticker_summary(ticker: str) -> str:
+    return f'Итого по акции {ticker}:\n-Нефть упала до мирового минимума\n-Владимир путин рассказал анекдот про дачников'
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.get(f"{Config.API_URL}/tickers/{ticker}/news_summary")
+    #
+    #     return response.json().get("summary")
+
+
+@dataclass
+class Resonance:
+    text: str
+    sentiment: float
+    search_index: float
+    source: str
+    url: str
+
+async def get_ticker_most_resonance(ticker: str, limit: int = 5) -> list[Resonance]:
+    return [
+        Resonance(text='нефть рухнула!!!', sentiment=-1, search_index=999, source='ТАСС', url='http://vk.com/'),
+        Resonance(text='путин пошутил, всем смеятсья!!!', sentiment=0.99, search_index=228, source='Интерфакс', url='http://vk.com/')
+    ]
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.post(f"{Config.API_URL}/tickers/{ticker}/news_summary", json={'limit': limit})
+    #
+    #     resonances = response.json().get("resonances")
+    #
+    #     return [Resonance(**res) for res in resonances]
+
+
+@dataclass
+class Interpretation:
+    think: str
+    answer: str
+
+async def get_an_interpretation(summary: str, resonance: str) -> Interpretation:
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.post(f"{Config.API_URL}/agent/interpretation", json={'summary': summary, 'resonance': resonance})
+    #
+    #     return response.json().get("interpretation")
+    return Interpretation(think="блин что вообще происходит ...", answer='Интерпретация: Все плохо, одному путину смешно ...')
+
+
+async def get_weekly_summary_and_interpretation() -> tuple[str, Interpretation]:
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.get(f"{Config.API_URL}/agent/daily_summary_and_interpretation")
+    #
+    #     result = response.json()
+    #     return (
+    #         result['summary'], Interpretation(**result['interpretation'])
+    #     )
+    return 'Все хорошо!', Interpretation(think="блин что вообще происходит ...", answer='Интерпретация: Все плохо, одному путину смешно ...')
