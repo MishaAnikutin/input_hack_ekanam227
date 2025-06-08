@@ -21,13 +21,13 @@ class RepoProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def client_vector(self) -> AsyncQdrantClient:
-        return AsyncQdrantClient(host=Config.QDRANT_HOST, port=Config.QDRANT_PORT)
+        return AsyncQdrantClient(url=Config.QDRANT_URL, api_key=Config.QDRANT_KEY)
 
     @provide(scope=Scope.APP)
     async def client_llm(self) -> OpenAI:
         return OpenAI(
-            base_url="https://api.llm7.io/v1",
-            api_key="unused"
+            base_url=Config.OPENAI_URL,
+            api_key=Config.OPENAI_KEY
         )
 
     company_repository = provide(CompanyRepository, provides=CompanyRepository)

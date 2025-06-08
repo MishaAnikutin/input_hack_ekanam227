@@ -10,6 +10,10 @@ class Config:
     ALLOWS_METHODS = os.getenv("ALLOWS_METHODS")
     ALLOWS_HEADERS = os.getenv("ALLOWS_HEADERS")
 
-    QDRANT_HOST = os.getenv("QDRANT_HOST")
-    QDRANT_PORT = os.getenv("QDRANT_PORT")
+    QDRANT_URL = os.getenv("QDRANT_URL")
+    QDRANT_KEY = os.getenv("QDRANT_KEY")
+
+    OPENAI_URL = os.getenv("OPENAI_URL")
+    OPENAI_KEY = os.getenv("OPENAI_KEY")
+
 
