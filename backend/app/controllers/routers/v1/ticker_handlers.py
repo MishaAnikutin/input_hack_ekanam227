@@ -27,3 +27,9 @@ async def create_ticker(
 ):
     return await service.create_ticker(ticker_data)
 
+
+@ticker_router.get("/tickers/{ticker}/news_summary")
+async def get_ticker_summary(ticker: str) -> dict:
+    summary = f'Итого по акции {ticker}:\n-Нефть упала до мирового минимума\n-Владимир путин рассказал анекдот про дачников'
+
+    return {'summary': summary}

@@ -1,6 +1,7 @@
 from dishka import Provider, Scope, provide
 
 from service import UserService, CompanyService, UserTickerService
+from service.agent import Agent
 
 
 class ServiceProvider(Provider):
@@ -11,3 +12,4 @@ class ServiceProvider(Provider):
     user_ticker_service = provide(
         UserTickerService, provides=UserTickerService
     )
+    agent = provide(Agent, provides=Agent)

@@ -85,3 +85,25 @@ class UserTickersResponse(BaseModel):
 class AllTickersResponse(BaseModel):
     count: int
     tickers: List[TickerOut]
+
+
+class Resonance(BaseModel):
+    text: str
+    sentiment: float
+    search_index: float
+    source: str
+    url: str
+
+
+class Interpretation(BaseModel):
+    think: str
+    answer: str
+
+
+class Resonances(BaseModel):
+    resonances: list[Resonance]
+
+
+class WeeklySummarizeResponse(BaseModel):
+    summary: str
+    interpretation: Interpretation

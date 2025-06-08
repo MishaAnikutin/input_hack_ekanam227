@@ -1,7 +1,11 @@
 from collections.abc import AsyncIterable
 
 from dishka import Provider, Scope, provide
+
+from config import Config
 from database.clients import SQLiteAsyncSession
+from qdrant_client import AsyncQdrantClient
+from openai import OpenAI
 
 from database.clients.sqlite import get_async_session
 from repos import CompanyRepository, UserRepository, UserTickerRepository
@@ -11,9 +15,20 @@ class RepoProvider(Provider):
     scope = Scope.APP
 
     @provide(scope=Scope.APP)
-    async def client(self) -> AsyncIterable[SQLiteAsyncSession]:
+    async def client_sql(self) -> AsyncIterable[SQLiteAsyncSession]:
         async with get_async_session() as session:
             yield session
+
+    @provide(scope=Scope.APP)
+    async def client_vector(self) -> AsyncQdrantClient:
+        return AsyncQdrantClient(host=Config.QDRANT_HOST, port=Config.QDRANT_PORT)
+
+    @provide(scope=Scope.APP)
+    async def client_llm(self) -> OpenAI:
+        return OpenAI(
+            base_url="https://api.llm7.io/v1",
+            api_key="unused"
+        )
 
     company_repository = provide(CompanyRepository, provides=CompanyRepository)
     user_repository = provide(UserRepository, provides=UserRepository)
