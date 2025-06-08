@@ -36,7 +36,7 @@ class Agent:
             with_payload=True
         )
 
-        # print(records)
+        print(records)
         documents = [rec.payload.get("summary_text") or rec.payload.get("title", "") for rec in records[0]]
         context = "\n".join(documents)[:12000]  # Ограничиваем длину контекста
 
@@ -68,17 +68,21 @@ class Agent:
             # query_filter=ticker_filter,
             limit=limit,
             # order_by=relevance_field,
-            # order_by='market_sentiment'
+            order_by='probability'
         )
 
         # Формируем список резонансов
         resonances = []
+
         for rec in records[0]:
             payload = rec.payload
+
+            market_sentiment = float(payload.get("market_sentiment", 0))
+            proba = float(payload.get("probability", 0))
             resonances.append(
                 Resonance(
                     text=payload.get("title", ""),
-                    sentiment=float(payload.get("market_sentiment", 0)),
+                    sentiment=market_sentiment * proba,
                     search_index=payload.get(relevance_field, 0.0),
                     source=payload.get("source", ""),
                     url=payload.get("url", "")
