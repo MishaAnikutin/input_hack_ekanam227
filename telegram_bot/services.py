@@ -149,11 +149,10 @@ class Stock:
 
 
 async def get_ticker_summary(ticker: str) -> str:
-    return f'Итого по акции {ticker}:\n-Нефть упала до мирового минимума\n-Владимир путин рассказал анекдот про дачников'
-    # async with httpx.AsyncClient() as client:
-    #     response = await client.get(f"{Config.API_URL}/tickers/{ticker}/news_summary")
-    #
-    #     return response.json().get("summary")
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{Config.API_URL}/tickers/{ticker}/news_summary")
+
+        return response.json().get("summary")
 
 
 @dataclass
@@ -165,16 +164,13 @@ class Resonance:
     url: str
 
 async def get_ticker_most_resonance(ticker: str, limit: int = 5) -> list[Resonance]:
-    return [
-        Resonance(text='нефть рухнула!!!', sentiment=-1, search_index=999, source='ТАСС', url='http://vk.com/'),
-        Resonance(text='путин пошутил, всем смеятсья!!!', sentiment=0.99, search_index=228, source='Интерфакс', url='http://vk.com/')
-    ]
-    # async with httpx.AsyncClient() as client:
-    #     response = await client.post(f"{Config.API_URL}/tickers/{ticker}/news_summary", json={'limit': limit})
-    #
-    #     resonances = response.json().get("resonances")
-    #
-    #     return [Resonance(**res) for res in resonances]
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{Config.API_URL}/tickers/{ticker}/most_resonance/limit/{limit}")
+
+        resonances = response.json().get("resonances")
+
+        return [Resonance(**res) for res in resonances]
 
 
 @dataclass
@@ -183,19 +179,18 @@ class Interpretation:
     answer: str
 
 async def get_an_interpretation(summary: str, resonance: str) -> Interpretation:
-    # async with httpx.AsyncClient() as client:
-    #     response = await client.post(f"{Config.API_URL}/agent/interpretation", json={'summary': summary, 'resonance': resonance})
-    #
-    #     return response.json().get("interpretation")
-    return Interpretation(think="блин что вообще происходит ...", answer='Интерпретация: Все плохо, одному путину смешно ...')
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"{Config.API_URL}/agent/interpretation", json={'summary': summary, 'resonance': resonance})
+
+        return response.json().get("interpretation")
 
 
 async def get_weekly_summary_and_interpretation() -> tuple[str, Interpretation]:
-    # async with httpx.AsyncClient() as client:
-    #     response = await client.get(f"{Config.API_URL}/agent/daily_summary_and_interpretation")
-    #
-    #     result = response.json()
-    #     return (
-    #         result['summary'], Interpretation(**result['interpretation'])
-    #     )
-    return 'Все хорошо!', Interpretation(think="блин что вообще происходит ...", answer='Интерпретация: Все плохо, одному путину смешно ...')
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{Config.API_URL}/agent/weekly_summary_and_interpretation")
+
+        result = response.json()
+        return (
+            result['summary'], Interpretation(**result['interpretation'])
+        )
+

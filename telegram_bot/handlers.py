@@ -177,3 +177,4 @@ async def summary_command(message: Message):
 
     await message.answer(text=f'Саммари: {summary}')
     await message.answer(text=f'Интерпретация:\nРазмышления: {interpretation.think}\n\nИтог: {interpretation.answer}')
+
