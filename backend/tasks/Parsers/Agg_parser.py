@@ -8,9 +8,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 sys.path.append('c:\\Users\\a.n.piskunov\\Desktop\\gitlab\\input_hack_ekanam227')
-from backend.tasks.date_parser import custom_date_parser
-from backend.tasks.Lenta_parser import LentaNewsParser
-from backend.tasks.Rbc_parser import rbc_parser
+from backend.tasks.Parsers.date_parser import custom_date_parser
+from backend.tasks.Parsers.Lenta_parser import LentaNewsParser
+from backend.tasks.Parsers.Rbc_parser import rbc_parser
 
 class NewsParser:
     def __init__(self, base_url: str = 'https://lenta.ru', max_workers: int = 10,
