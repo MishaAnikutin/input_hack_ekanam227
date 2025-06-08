@@ -12,17 +12,13 @@ user_router = APIRouter(prefix="/users", tags=["Пользователи"])
     "/",
     response_model=UserOut,
     status_code=status.HTTP_200_OK,
-    summary="Создать или получить пользователя"
+    summary="Создать или получить пользователя",
 )
 @inject
 async def get_or_create_user_handler(
-    user_data: UserCreate,
-    service: FromDishka[UserService]
+    user_data: UserCreate, service: FromDishka[UserService]
 ):
     try:
         return await service.get_or_create_user(user_data)
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

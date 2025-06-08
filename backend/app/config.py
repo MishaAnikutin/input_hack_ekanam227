@@ -15,5 +15,3 @@ class Config:
 
     OPENAI_URL = os.getenv("OPENAI_URL")
     OPENAI_KEY = os.getenv("OPENAI_KEY")
-
-

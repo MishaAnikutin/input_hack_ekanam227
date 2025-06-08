@@ -7,4 +7,4 @@ from .service_ioc import ServiceProvider
 container = make_async_container(RepoProvider(), ServiceProvider())
 
 
-__all__ = ('container', )
+__all__ = ("container",)

@@ -9,7 +9,5 @@ class ServiceProvider(Provider):
 
     company_service = provide(UserService, provides=UserService)
     user_service = provide(CompanyService, provides=CompanyService)
-    user_ticker_service = provide(
-        UserTickerService, provides=UserTickerService
-    )
+    user_ticker_service = provide(UserTickerService, provides=UserTickerService)
     agent = provide(Agent, provides=Agent)

@@ -25,10 +25,7 @@ class RepoProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def client_llm(self) -> OpenAI:
-        return OpenAI(
-            base_url=Config.OPENAI_URL,
-            api_key=Config.OPENAI_KEY
-        )
+        return OpenAI(base_url=Config.OPENAI_URL, api_key=Config.OPENAI_KEY)
 
     company_repository = provide(CompanyRepository, provides=CompanyRepository)
     user_repository = provide(UserRepository, provides=UserRepository)

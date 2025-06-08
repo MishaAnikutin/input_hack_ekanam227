@@ -48,8 +48,6 @@ class UserOut(UserBase):
         from_attributes = True
 
 
-
-
 class UserWithTickers(UserOut):
     tickers: List[TickerOut] = []
 

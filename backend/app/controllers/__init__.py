@@ -7,4 +7,4 @@ router = APIRouter(prefix="/api")
 router.include_router(router_v1)
 
 
-__all__ = ('router', )
+__all__ = ("router",)

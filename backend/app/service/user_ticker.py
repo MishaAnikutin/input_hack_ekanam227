@@ -6,7 +6,8 @@ from service.schemas import (
     UserOut,
     UserTickersResponse,
     TickerOut,
-    AddTickerToUserRequest, UserTickerBase,
+    AddTickerToUserRequest,
+    UserTickerBase,
 )
 
 
@@ -50,9 +51,7 @@ class UserTickerService:
             user_id=user.id, tickers=[TickerOut.from_orm(t) for t in tickers]
         )
 
-    async def remove_ticker_from_user(
-        self, telegram_id: int, ticker: str
-    ) -> bool:
+    async def remove_ticker_from_user(self, telegram_id: int, ticker: str) -> bool:
         """Удаляет тикер из портфеля пользователя"""
         user = await self.user_repo.get_user(telegram_id)
         if not user:

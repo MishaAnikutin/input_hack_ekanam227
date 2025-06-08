@@ -2,7 +2,7 @@ from dishka import FromDishka
 from fastapi import APIRouter, status
 from dishka.integrations.fastapi import inject
 
-from service import CompanyService
+from service import CompanyService, Agent
 from service.schemas import TickerOut, AllTickersResponse, TickerCreate
 
 
@@ -15,21 +15,13 @@ async def get_all_tickers(service: FromDishka[CompanyService]) -> AllTickersResp
     return await service.get_all_tickers()
 
 
-@ticker_router.post(
-    "/",
-    response_model=TickerOut,
-    status_code=status.HTTP_201_CREATED
-)
+@ticker_router.post("/", response_model=TickerOut, status_code=status.HTTP_201_CREATED)
 @inject
-async def create_ticker(
-        ticker_data: TickerCreate,
-        service: FromDishka[CompanyService]
-):
+async def create_ticker(ticker_data: TickerCreate, service: FromDishka[CompanyService]):
     return await service.create_ticker(ticker_data)
 
 
-@ticker_router.get("/tickers/{ticker}/news_summary")
-async def get_ticker_summary(ticker: str) -> dict:
-    summary = f'Итого по акции {ticker}:\n-Нефть упала до мирового минимума\n-Владимир путин рассказал анекдот про дачников'
-
-    return {'summary': summary}
+@ticker_router.get("/{ticker}/news_summary")
+@inject
+async def get_ticker_summary(ticker: str, agent: FromDishka[Agent]) -> dict:
+    return {"summary": await agent.get_summary_by_ticker(ticker=ticker)}

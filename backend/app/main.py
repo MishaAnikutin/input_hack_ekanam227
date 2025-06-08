@@ -9,9 +9,7 @@ from database.clients.sqlite import init_db
 
 
 app = FastAPI(
-    title="economics-news-system",
-    docs_url="/docs",
-    openapi_url='/openapi.json'
+    title="economics-news-system", docs_url="/docs", openapi_url="/openapi.json"
 )
 
 app.add_middleware(
