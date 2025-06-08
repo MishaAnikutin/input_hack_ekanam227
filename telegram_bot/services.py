@@ -166,7 +166,7 @@ class Resonance:
 async def get_ticker_most_resonance(ticker: str, limit: int = 5) -> list[Resonance]:
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{Config.API_URL}/tickers/{ticker}/most_resonance/limit/{limit}")
+        response = await client.get(f"{Config.API_URL}/agent/{ticker}/most_resonance/limit/{limit}")
 
         resonances = response.json().get("resonances")
 
@@ -178,12 +178,20 @@ class Interpretation:
     think: str
     answer: str
 
+
 async def get_an_interpretation(summary: str, resonance: str) -> Interpretation:
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{Config.API_URL}/agent/interpretation", json={'summary': summary, 'resonance': resonance})
+        # Передаем параметры через query string с помощью `params`
+        response = await client.post(
+            f"{Config.API_URL}/agent/interpretation",
+            params={'summary': summary, 'resonance': resonance}
+        )
 
-        return response.json().get("interpretation")
+        # Всегда проверяем статус ответа
+        response.raise_for_status()
 
+        data = response.json()
+        return Interpretation(think=data["think"], answer=data["answer"])
 
 async def get_weekly_summary_and_interpretation() -> tuple[str, Interpretation]:
     async with httpx.AsyncClient() as client:

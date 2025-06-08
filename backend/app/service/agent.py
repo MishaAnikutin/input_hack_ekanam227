@@ -20,7 +20,14 @@ class Agent:
     async def get_ticker_most_resonance(
         self, ticker: str, limit: int = 5
     ) -> Resonances:
-        ...
+        return Resonances(
+            resonances=[
+                Resonance(text='нефть рухнула!!!', sentiment=-1, search_index=999.0, source='ТАСС',
+                          url='http://vk.com/'),
+                Resonance(text='путин пошутил, всем смеятсья!!!', sentiment=0.99, search_index=228.0,
+                          source='Интерфакс',
+                          url='http://vk.com/')
+            ])
 
     async def get_an_interpretation(
         self,

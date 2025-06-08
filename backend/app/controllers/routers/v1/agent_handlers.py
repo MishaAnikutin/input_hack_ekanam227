@@ -18,7 +18,9 @@ agent_router = APIRouter(prefix="/agent", tags=["Агент"])
 async def get_ticker_most_resonance(
     agent_service: FromDishka[Agent], ticker: str, limit: int = 5
 ) -> Resonances:
-    return await agent_service.get_ticker_most_resonance(ticker=ticker, limit=limit)
+    result = await agent_service.get_ticker_most_resonance(ticker=ticker, limit=limit)
+    print(result)
+    return result
 
 
 @agent_router.post("/interpretation")
@@ -27,7 +29,8 @@ async def get_an_interpretation(
     summary: str, resonance: str, agent: FromDishka[Agent]
 ) -> Interpretation:
     interpretation = await agent.get_an_interpretation(summary, resonance)
-    return {"interpretation": interpretation}
+    print(interpretation)
+    return interpretation
 
 
 @agent_router.get(f"/weekly_summary_and_interpretation")
