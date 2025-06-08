@@ -49,7 +49,6 @@ async def get_ticker_most_resonance(self, ticker: str, limit: int = 5) -> Resona
         with_payload=True,
     )
     )
-
     # Создаем объекты Resonance
     best_resonances = [
         Resonance(
