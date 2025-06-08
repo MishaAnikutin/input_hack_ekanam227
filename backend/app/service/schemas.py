@@ -90,7 +90,6 @@ class AllTickersResponse(BaseModel):
 class Resonance(BaseModel):
     text: str
     sentiment: float
-    search_index: float
     source: str
     url: str
 
